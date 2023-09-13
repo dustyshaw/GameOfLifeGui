@@ -87,3 +87,8 @@ true
 clj꞉graphics꞉> 
 true
 clj꞉graphics꞉> 
+(0 2 4 6 8 10 12 14 16 18)
+clj꞉graphics꞉> 
+#'graphics/update
+clj꞉graphics꞉> 
+; nREPL Connection was closed

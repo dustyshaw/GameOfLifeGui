@@ -91,26 +91,35 @@
 
 (defn setup []
   ; initial state
-  {:x 0 :y 0 :r min-r})
+  (q/frame-rate 10)
+  #{[2 3] [3 3] [4 3] [5 6] [6 6] [7 6]}
+  )
 
 (defn update [state]
   ; increase radius of the circle by 1 on each frame
-  (update-in state [:r] inc))
+  ;; (update-in state [:r] inc)
+)
 
 (defn draw [state]
   (q/background 255)
-  (q/ellipse (:x state) (:y state) (:r state) (:r state)))
+  (doseq [cell state]
+    (let [xCoor (* square-size (first cell))
+          yCoor (* square-size (second cell))]
+      (q/rect xCoor yCoor square-size square-size)
+      )
+    )
+  )
 
 ; decrease radius by 1 but keeping it not less than min-r
 (defn shrink [r]
   (max min-r (dec r)))
 
-(defn mouse-moved [state event]
-  (-> state
-      ; set circle position to mouse position
-      (assoc :x (:x event) :y (:y event))
-      ; decrease radius
-      (update-in [:r] shrink)))
+;; (defn mouse-moved [state event]
+;;   (-> state
+;;       ; set circle position to mouse position
+;;       (assoc :x (:x event) :y (:y event))
+;;       ; decrease radius
+;;       (update-in [:r] shrink)))
 
 
 (defn draw-stuff [args]
@@ -119,7 +128,7 @@
     :size [800 800]
     :setup setup
     :draw draw
-    :update update
-    :mouse-moved mouse-moved
+    :update next-generation
+    ;; :mouse-moved mouse-moved
     :middleware [m/fun-mode])
   )
