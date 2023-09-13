@@ -83,15 +83,36 @@
 (defn tests [opts]
   (run-all-tests))
 
+
 ;; END OF TESTS
 
 (def min-r 10)
 (def square-size 10)
 
+(defn testRandomNumbersFunction[args]
+(println (rand-int 40))
+  )
+
+
+(defn make-rando-board [args] 
+  (def randomCells #{})
+  (for [x (range 20)]
+    (for [y (range 20)]
+      (if (= (mod (rand-int 30) 2) 0)
+        (def randomCells (conj randomCells [x y]))
+        nil
+        )
+      )
+    )
+  (println randomCells)
+  )
+(println make-rando-board)
+
 
 (defn setup []
   ; initial state
   (q/frame-rate 10)
+
   #{[2 3] [3 3] [4 3] [5 6] [6 6] [7 6]}
   )
 
