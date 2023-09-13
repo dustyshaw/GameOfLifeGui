@@ -86,34 +86,35 @@
 
 ;; END OF TESTS
 
-(def min-r 10)
 (def square-size 10)
 
 (defn testRandomNumbersFunction[args]
 (println (rand-int 40))
   )
 
-
-(defn make-rando-board [args] 
-  (def randomCells #{})
-  (for [x (range 20)]
-    (for [y (range 20)]
-      (if (= (mod (rand-int 30) 2) 0)
-        (def randomCells (conj randomCells [x y]))
-        nil
-        )
-      )
-    )
-  (println randomCells)
+;; need to return a mathematical set
+(defn make-rando-board [] 
+  (into #{}(remove nil?
+               (for [x (range 20) y (range 20)]
+                 (if (< (rand 1) 0.1)
+                   [x y]
+                   nil))))
+  
   )
-(println make-rando-board)
+(defn print-make-rando [opts]
+  (println (make-rando-board))
+
+  )
 
 
 (defn setup []
   ; initial state
-  (q/frame-rate 10)
-
-  #{[2 3] [3 3] [4 3] [5 6] [6 6] [7 6]}
+  (q/frame-rate 2)
+  ;;(q/text "hello" 10 10)
+  ;;{:x 0 :y 0}
+  (make-rando-board)
+  ;;#{[2 3] [3 3] [4 3] [5 6] [6 6] [7 6]}
+  ;;'([2 3] [3 3] [4 3] [5 6] [6 6] [7 6])
   )
 
 (defn update [state]
@@ -123,6 +124,9 @@
 
 (defn draw [state]
   (q/background 255)
+  (q/fill 142 237 218)
+  (q/stroke-weight 1 )
+  (q/text "hello "  100 100)
   (doseq [cell state]
     (let [xCoor (* square-size (first cell))
           yCoor (* square-size (second cell))]
@@ -132,15 +136,14 @@
   )
 
 ; decrease radius by 1 but keeping it not less than min-r
-(defn shrink [r]
-  (max min-r (dec r)))
+;; (defn shrink [r]
+;;   (max min-r (dec r)))
 
-;; (defn mouse-moved [state event]
-;;   (-> state
-;;       ; set circle position to mouse position
-;;       (assoc :x (:x event) :y (:y event))
-;;       ; decrease radius
-;;       (update-in [:r] shrink)))
+ (defn mouse-moved [state event]
+   (-> state
+       ; set circle position to mouse position
+       (assoc :x (:x (mod event square-size)) :y (:y (mod event square-size)))
+       ))
 
 
 (defn draw-stuff [args]
