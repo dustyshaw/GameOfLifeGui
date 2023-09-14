@@ -95,7 +95,7 @@
 ;; need to return a mathematical set
 (defn make-rando-board [] 
   (into #{}(remove nil?
-               (for [x (range 20) y (range 20)]
+               (for [x (range 72) y (range 72)]
                  (if (< (rand 1) 0.1)
                    [x y]
                    nil))))
@@ -109,7 +109,7 @@
 
 (defn setup []
   ; initial state
-  (q/frame-rate 2)
+  (q/frame-rate 30)
   ;;(q/text "hello" 10 10)
   ;;{:x 0 :y 0}
   (make-rando-board)
@@ -126,7 +126,7 @@
   (q/background 255)
   (q/fill 142 237 218)
   (q/stroke-weight 1 )
-  (q/text "hello "  100 100)
+  ;(q/text "hello "  100 100)
   (doseq [cell state]
     (let [xCoor (* square-size (first cell))
           yCoor (* square-size (second cell))]
