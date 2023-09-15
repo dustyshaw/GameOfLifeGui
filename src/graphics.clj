@@ -1,8 +1,7 @@
 (ns graphics
   (:require [quil.core :as q]
             [quil.middleware :as m]
-            [clojure.test :refer :all])
-  )
+            [clojure.test :refer :all]))
 
 
 
@@ -26,8 +25,7 @@
   livingNeighbCells)
 
 (defn countLivingNeighbors [[x y] LivingCellsList]
-  (count (living-neighbors [x y] LivingCellsList))
-  )
+  (count (living-neighbors [x y] LivingCellsList)))
 
 
 
@@ -69,7 +67,6 @@
         (def next-gen-cells (conj next-gen-cells kCell))
         (def next-gen-cells (disj next-gen-cells kCell)))))
   next-gen-cells)
-(next-generation #{[2 3] [3  3] [4 3]})
 
 
 ;; END OF DUSTYS CODE
@@ -82,77 +79,64 @@
 
 (defn tests [opts]
   (run-all-tests))
-
-
 ;; END OF TESTS
 
+
+
+
+
+;; Creates a mathematical set of random living cells to set up the game
+(defn make-rando-board []
+  (into #{} (remove nil?
+                    (for [x (range 40) y (range 40)]
+                      (if (< (rand 1) 0.1)
+                        [x y]
+                        nil)))))
+
 (def square-size 10)
-
-(defn testRandomNumbersFunction[args]
-(println (rand-int 40))
-  )
-
-;; need to return a mathematical set
-(defn make-rando-board [] 
-  (into #{}(remove nil?
-               (for [x (range 20) y (range 20)]
-                 (if (< (rand 1) 0.1)
-                   [x y]
-                   nil))))
-  
-  )
-(defn print-make-rando [opts]
-  (println (make-rando-board))
-
-  )
-
-
 (defn setup []
   ; initial state
-  (q/frame-rate 2)
-  ;;(q/text "hello" 10 10)
-  ;;{:x 0 :y 0}
+  (q/frame-rate 1)
+
   (make-rando-board)
-  ;;#{[2 3] [3 3] [4 3] [5 6] [6 6] [7 6]}
-  ;;'([2 3] [3 3] [4 3] [5 6] [6 6] [7 6])
+
+  )
+
+(defn draw [state]
+  (q/background 25 25 25)
+  (q/fill 142 237 218)
+  (q/stroke-weight 1)
+
+  (doseq [cell state]
+    (let [xCoor (* square-size (first cell))
+          yCoor (* square-size (second cell))]
+      (q/rect xCoor yCoor square-size square-size)))
+  )
+
+(defn add-current-mouse-pos []
+ 
+  [(/ (- (q/mouse-x) (mod (q/mouse-x) square-size)) 10) (/ (- (q/mouse-y) (mod (q/mouse-y) square-size)) 10)]
+  
   )
 
 (defn update [state]
   ; increase radius of the circle by 1 on each frame
-  ;; (update-in state [:r] inc)
-)
 
-(defn draw [state]
-  (q/background 255)
-  (q/fill 142 237 218)
-  (q/stroke-weight 1 )
-  (q/text "hello "  100 100)
-  (doseq [cell state]
-    (let [xCoor (* square-size (first cell))
-          yCoor (* square-size (second cell))]
-      (q/rect xCoor yCoor square-size square-size)
-      )
-    )
-  )
 
-; decrease radius by 1 but keeping it not less than min-r
-;; (defn shrink [r]
-;;   (max min-r (dec r)))
+  ;;(add-current-mouse-pos state)
+  
+  ;; (conj state (add-current-mouse-pos))
+   (println (add-current-mouse-pos))
+   (println state)
 
- (defn mouse-moved [state event]
-   (-> state
-       ; set circle position to mouse position
-       (assoc :x (:x (mod event square-size)) :y (:y (mod event square-size)))
-       ))
-
+  (next-generation (conj state (add-current-mouse-pos))))
 
 (defn draw-stuff [args]
-  
+
   (q/defsketch example
     :size [800 800]
     :setup setup
     :draw draw
-    :update next-generation
+    :update update
     ;; :mouse-moved mouse-moved
-    :middleware [m/fun-mode])
-  )
+    :middleware [m/fun-mode]))
